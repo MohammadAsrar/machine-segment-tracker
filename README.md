@@ -157,6 +157,11 @@ machine-segment-tracker/
 └── README.md
 ```
 
+## 🙏 Credit
+
+This project was built as part of a Full-Stack Internship assignment provided by [PatternLab.ai](https://patternlab.ai).  
+The interface design and project requirements were based on their assignment prompt.
+
 ## License
 
 MIT

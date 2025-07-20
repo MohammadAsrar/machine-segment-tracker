@@ -1,0 +1,72 @@
+[
+  {
+    "date": "2025-07-15",
+    "startTime": "06:00:00",
+    "endTime": "07:30:00",
+    "machineName": "M1",
+    "segmentType": "uptime"
+  },
+  {
+    "date": "2025-07-15",
+    "startTime": "07:30:00",
+    "endTime": "08:00:00",
+    "machineName": "M2",
+    "segmentType": "idle"
+  },
+  {
+    "date": "2025-07-15",
+    "startTime": "08:00:00",
+    "endTime": "09:15:00",
+    "machineName": "M3",
+    "segmentType": "downtime"
+  },
+  {
+    "date": "2025-07-15",
+    "startTime": "09:15:00",
+    "endTime": "10:45:00",
+    "machineName": "M1",
+    "segmentType": "uptime"
+  },
+  {
+    "date": "2025-07-15",
+    "startTime": "10:45:00",
+    "endTime": "11:00:00",
+    "machineName": "M2",
+    "segmentType": "idle"
+  },
+  {
+    "date": "2025-07-15",
+    "startTime": "11:00:00",
+    "endTime": "11:45:00",
+    "machineName": "M3",
+    "segmentType": "downtime"
+  },
+  {
+    "date": "2025-07-15",
+    "startTime": "11:45:00",
+    "endTime": "13:00:00",
+    "machineName": "M1",
+    "segmentType": "uptime"
+  },
+  {
+    "date": "2025-07-15",
+    "startTime": "13:00:00",
+    "endTime": "13:30:00",
+    "machineName": "M2",
+    "segmentType": "idle"
+  },
+  {
+    "date": "2025-07-15",
+    "startTime": "13:30:00",
+    "endTime": "14:30:00",
+    "machineName": "M3",
+    "segmentType": "downtime"
+  },
+  {
+    "date": "2025-07-15",
+    "startTime": "14:30:00",
+    "endTime": "16:00:00",
+    "machineName": "M1",
+    "segmentType": "uptime"
+  }
+]

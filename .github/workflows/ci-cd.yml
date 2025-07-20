@@ -1,0 +1,173 @@
+name: Machine Segment Tracker CI/CD
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+
+    services:
+      mongodb:
+        image: mongo:4.4
+        ports:
+          - 27017:27017
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "16"
+          cache: "npm"
+
+      # Backend tests
+      - name: Install backend dependencies
+        run: |
+          cd backend
+          npm ci
+
+      - name: Run backend linting
+        run: |
+          cd backend
+          npm run lint
+
+      - name: Run backend tests
+        run: |
+          cd backend
+          npm test
+        env:
+          MONGODB_URI: mongodb://localhost:27017/machine-segment-tracker-test
+
+      # Frontend tests
+      - name: Install frontend dependencies
+        run: |
+          cd frontend
+          npm ci
+
+      - name: Run frontend linting
+        run: |
+          cd frontend
+          npm run lint || true
+
+      - name: Run frontend tests
+        run: |
+          cd frontend
+          npm test -- --watchAll=false
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "16"
+          cache: "npm"
+
+      # Build backend
+      - name: Build backend
+        run: |
+          cd backend
+          npm ci
+          npm run build --if-present
+
+      # Build frontend
+      - name: Build frontend
+        run: |
+          cd frontend
+          npm ci
+          npm run build
+        env:
+          REACT_APP_API_URL: ${{ secrets.REACT_APP_API_URL }}
+          CI: false
+
+      # Archive production artifacts
+      - name: Archive backend production artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: backend-dist
+          path: |
+            backend/src
+            backend/package.json
+            backend/package-lock.json
+
+      - name: Archive frontend production artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: frontend-build
+          path: frontend/build
+
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    environment: production
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Download backend artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: backend-dist
+          path: backend-dist
+
+      - name: Download frontend artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: frontend-build
+          path: frontend-build
+
+      # Example: Deploy to Docker Hub
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+
+      - name: Build and push backend Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./backend/Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/machine-segment-tracker-backend:latest
+
+      - name: Build and push frontend Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./frontend/Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/machine-segment-tracker-frontend:latest
+
+      # Example: Deploy to server via SSH
+      - name: Deploy to production server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /opt/machine-segment-tracker
+            docker-compose pull
+            docker-compose up -d
+            docker system prune -af

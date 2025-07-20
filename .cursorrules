@@ -1,0 +1,59 @@
+# Machine Segment Tracker Coding Standards
+
+## Asynchronous Code
+- Use async/await instead of Promise chains or callbacks
+- Handle errors with try-catch blocks in async functions
+
+## TypeScript
+- Use TypeScript interfaces for all data structures
+- Define proper types for function parameters and return values
+- Avoid using 'any' type when possible
+
+## Naming Conventions
+- Use meaningful, descriptive variable and function names
+- Follow camelCase for variables and functions
+- Follow PascalCase for components and classes
+- Use ALL_CAPS for constants
+
+## Code Organization
+- Follow clean code principles
+- Keep functions small and focused on a single task
+- Limit function parameters to 3 when possible
+- Extract complex logic into separate helper functions
+
+## Comments and Documentation
+- Add comments for complex logic
+- Document function parameters and return values
+- Include JSDoc comments for public APIs
+
+## UI Components
+- Use Material-UI components consistently
+- Follow Material Design principles
+- Maintain consistent spacing and typography
+
+## Error Handling
+- Implement proper error handling with try-catch blocks
+- Display user-friendly error messages
+- Log detailed error information for debugging
+
+## Functional Programming
+- Use functional programming patterns where appropriate
+- Prefer immutable data structures
+- Use array methods like map, filter, reduce instead of loops when possible
+
+## React Best Practices
+- Follow React hooks best practices
+- Use functional components with hooks instead of class components
+- Avoid prop drilling with Context API when necessary
+- Properly manage component lifecycle with useEffect
+
+## MongoDB Best Practices
+- Use proper indexing for frequently queried fields
+- Structure documents for efficient querying
+- Use MongoDB aggregation for complex data operations
+- Implement proper data validation at the schema level
+
+## Input Validation
+- Include proper validation for all user inputs
+- Validate data both on client and server side
+- Use schema validation libraries when appropriate 
